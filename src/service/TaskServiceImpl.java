@@ -4,9 +4,7 @@ import model.Task;
 import repository.TaskRepository;
 
 import java.io.IOException;
-import java.util.Comparator;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 public class TaskServiceImpl implements TaskService {
 
@@ -19,18 +17,23 @@ public class TaskServiceImpl implements TaskService {
   }
 
   @Override
-  public int addTask(String description) {
+  public void addTask(String description) {
     int newId = getNextId();
     tasks.add(new Task(newId, description));
     System.out.println("Task added successfully (ID: " + newId + ")");
-
-    return newId;
   }
 
   @Override
-  public int updateTask(int id, String description) {
-    System.out.println(id + " " + description);
-    return 0;
+  public void updateTask(int id, String description) {
+    Task update = tasks.stream().filter(task -> task.getId() == id).findFirst().orElse(null);
+
+    if (update != null) {
+      update.setDescription(description);
+      update.setUpdatedAt(new Date());
+      System.out.println("Task updated successfully (ID: " + update.getId() + ")");
+    } else {
+      System.out.println("Task does not exist.");
+    }
   }
 
   @Override
